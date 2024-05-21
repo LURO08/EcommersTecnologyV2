@@ -24,7 +24,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Header />
+        <Header/>
         <main>
           <Routes>
             <Route path="/" element={<Login />} />

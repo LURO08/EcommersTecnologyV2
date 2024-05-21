@@ -85,43 +85,34 @@ function Header() {
             <div className="nav-links">
                 {userName && rol === ADMIN_ROLE && (
                     <>
+                    <div className="dropdown">
+                        <a href="#">Usuarios</a>
+                        <ul className="dropdown-menu">
+                            <li><Link to="/User-Register">Registrar Usuario</Link></li>
+                            <li><Link to="/usuarios">Gestion de Usuarios</Link></li>
+                        </ul>
+                    </div>
 
-                      
-                    
-                       <div className="dropdown">
-                                <a href="#">Usuarios</a>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="/User-Register">Registrar Usuario</Link></li>
-                                    <li><Link to="/usuarios">Gestion de Usuarios</Link></li>
-                                </ul>
-                        </div>
+                    <div className="dropdown">
+                        <a href="#">Productos</a>
+                        <ul className="dropdown-menu">
+                            <li><Link to="/registrarProducto">Registrar Producto</Link></li>
+                            <li><Link to="/Productos">Gestion de Productos</Link></li>
+                            <li>  <Link to="/estadisticas">Estadisticas</Link></li>
+                        </ul>
+                    </div>
 
-                        <div className="dropdown">
-                                <a href="#">Productos</a>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="/registrarProducto">Registrar Producto</Link></li>
-                                    <li><Link to="/Productos">Gestion de Productos</Link></li>
-                                    <li>  <Link to="/estadisticas">Estadisticas</Link></li>
-                                </ul>
-                        </div>
-
-                        
-
-                        <div className="dropdown">
-                                <a href="#">Ventas</a>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="/Ventas">Gestion Ventas</Link></li>
-                                </ul>
-                        </div>
-
-                        
-
+                    <div className="dropdown">
+                        <a href="#">Ventas</a>
+                        <ul className="dropdown-menu">
+                            <li><Link to="/Ventas">Gestion Ventas</Link></li>
+                        </ul>
+                    </div>
                     </>
                 )}
-
-                        <div>
-                            <h3>Puntos: {points}</h3>
-                        </div>
+                    <div>
+                        <h3>Puntos: {points}</h3>
+                    </div>
 
                 <a onClick={toggleCart}>
                     <img src="https://firebasestorage.googleapis.com/v0/b/e-commers-67174.appspot.com/o/carritoCompras2.png?alt=media&token=69e9b11c-b714-44a7-ba7d-25d4c54ba620" alt="Carrito" width={25} height={25} />
