@@ -1,0 +1,78 @@
+.sign-up-form {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 8px 8px 20px grey;
+    font-family: 'Arial', sans-serif;
+    justify-content: center;
+    align-items: center;
+    text-align: justify; /* Añade esta línea */
+}
+
+
+.sign-up-form h1 {
+    text-align: center;
+    color: #333;
+}
+
+
+.sign-up-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.sign-up-form input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+
+.sign-up-form button {
+    width: 95%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #5C67F2;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sign-up-form button:hover {
+    background-color: #4a54f1;
+}
+
+.sign-up-form p.error-message {
+    color: #ff4d4d;
+    font-size: 14px;
+    text-align: center;
+}
+
+.sign-up-form form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+

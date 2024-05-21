@@ -1,0 +1,128 @@
+.Container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
+    padding-top: 10px; /* Ajuste del espacio superior */
+}
+
+.product-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
+}
+
+.product-list {
+  
+    background-color: #f9f9f9;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.Titulo {
+    text-align: center; /* Centra el texto horizontalmente */
+}
+
+.Titulo h1 {
+    color: #333; /* Color del texto */
+    text-align: center; /* Texto centrado */
+    font-size: 26px; /* Tamaño del texto */
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Buen control del espacio vertical */
+    align-items: center; /* Centrado horizontal de los elementos internos */
+    width: calc(25% - 50px); /* Calcula el ancho correctamente, asumiendo que el margen es de 25px a cada lado */
+    min-width: 230px; /* Mantiene un ancho mínimo */
+    border-radius: 30px; /* Esquinas redondeadas */
+    text-align: center; /* Alinea el texto al centro */
+    overflow: hidden; /* Evita que el contenido desborde */
+    margin: 25px; /* Asegura el margen para el efecto hover y espacio entre tarjetas */
+    padding: 18px 0; /* Padding vertical */
+    box-shadow: 8px 8px 20px grey; /* Sombra para 3D efecto */
+    transition: .4s; /* Transición suave para el hover */
+    max-height: 400px;
+    padding-bottom: 20px;
+}
+
+.product-card:hover {
+    transform: scale(1.1); /* Aumenta el tamaño al pasar el mouse */
+}
+
+
+
+.product-card img {
+    height: 180px; /* Altura fija para la imagen */
+    width: 95%;  /* Ancho completo del contenedor */
+    object-fit: contain; /* Escala la imagen para asegurar que toda sea visible */
+    background: #fff; /* Fondo blanco para resaltar espacios no cubiertos por la imagen */
+    margin-bottom: 0px;
+}
+
+
+.product-list-container h2 {
+    color: #333; /* Color del texto */
+    text-align: center; /* Texto centrado */
+    font-size: 1.5em; /* Tamaño del texto */
+}
+
+.product-card h3 {
+    color: #333; /* Color del texto para los títulos dentro de la tarjeta */
+    font-size: 1.5em; /* Tamaño del texto para los títulos */
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.product-card p {
+    color: #666; /* Color del texto para los párrafos */
+    margin: 5px 0; /* Margen vertical para los párrafos */
+    margin-top: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.loading {
+    font-size: 1.5em; /* Tamaño del texto para el estado de carga */
+    text-align: center; /* Texto centrado */
+    padding: 20px; /* Padding alrededor del texto */
+}
+
+.botones{
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+table  td{
+    text-align: center;
+    justify-content: center;
+
+}
+
+table  td p{
+    text-align: center;
+    justify-content: center;
+    width: 80px;
+
+}
+
+.delete button{
+    width: 80px;
+    margin-left: 10px;
+    text-align: center;
+}
+
+
+.botones span{
+   text-align: center;
+   padding: 8px;
+   padding-top: 20px;
+   padding-right: 15px;
+    
+
+}

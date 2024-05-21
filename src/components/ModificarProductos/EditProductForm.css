@@ -1,0 +1,51 @@
+.edit-product-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 8px 8px 20px grey;
+    border-radius: 5px;
+    margin-top: 5%;
+  }
+  
+  .edit-product-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .edit-product-form input[type="text"],
+  .edit-product-form input[type="number"],
+  .edit-product-form textarea {
+    width: 95%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .edit-product-form input[type="file"] {
+    margin-top: 5px;
+  }
+  
+  .edit-product-form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .edit-product-form button:disabled {
+    background-color: #007bff;
+    cursor: not-allowed;
+  }
+  
+  .loading {
+    text-align: center;
+    margin-top: 20px;
+  }
+  

@@ -1,0 +1,189 @@
+/* General resets and styling */
+body {
+    margin: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #343a40;
+    color: white;
+}
+
+.header button,
+.logo a,
+.nav-links a,
+.nav-links button,
+.dropdown-menu a,
+.cart-dropdown button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.header button:hover,
+.nav-links a:hover,
+.cart-dropdown button:hover {
+    background-color: #4c5159;
+}
+
+.nav-links,
+.navUser-links {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown,
+.dropdownUser {
+    position: relative;
+}
+
+.dropdown-menu,
+.dropdownUser-menu {
+    display: none;
+    position: absolute;
+    background-color: #343a40;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 150px; /* Ajusta el ancho según sea necesario */
+    padding: 0;
+    margin: 0;
+    left: 0; /* Alinear a la izquierda */
+}
+
+.dropdown:hover .dropdown-menu,
+.dropdownUser:hover .dropdownUser-menu {
+    display: block;
+}
+
+.dropdownUser-menu  {
+   margin-left: -50%;
+   width: 141px;
+}
+
+.dropdown-menu li,
+.dropdownUser-menu li {
+    padding: 10px;
+    list-style: none;
+    margin-left: -10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.navUser-links ul li a {
+    padding: 10px; /* Ajustar el espaciado del texto */
+    font-size: 12px; /* Reducir el tamaño del texto */
+    list-style: none;
+}
+
+/* Ajuste del texto en el navbar */
+.nav-links ul li a,
+.dropdown-menu li a {
+    padding: 20px 15px; /* Ajustar el espaciado del texto */
+    font-size: 14px; /* Reducir el tamaño del texto */
+    white-space: nowrap; /* Evitar que el texto se desborde */
+    overflow: hidden; /* Ocultar el texto que se desborda */
+    width: 85%;
+    display: block;
+}
+/* Ajuste del tamaño al hacer hover */
+.nav-links ul li a:hover,
+.dropdown-menu li a:hover,
+.navUser-links ul li a:hover {
+    font-size: 14px; /* Mantener el mismo tamaño al hacer hover */
+}
+
+
+/* Cart dropdown specific styles */
+.cart-dropdown {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 300px;
+    background-color: #fff;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    max-height: 300px; 
+    overflow-y: auto; 
+    
+}
+
+.cart-dropdown .contentproducto{
+    display: flex;
+}
+
+.cart-dropdown .contentproducto img{
+    margin-right: 10px;
+}
+
+.cart-dropdown p,
+.cart-dropdown ul {
+    margin: 0;
+    color: #343a40;
+    padding: 0;
+}
+
+.cart-dropdown li {
+    margin: 10px 0;
+    padding: 10px;
+    border-bottom: 1px solid #eee; /* Adds a subtle line between items */
+    list-style: none;
+}
+
+.cart-dropdown .item-top,
+.cart-dropdown .item-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.cart-dropdown .item-name {
+    flex-grow: 1;
+}
+
+.cart-dropdown .btnEliminar {
+    padding: 5px;
+    background-color: #ff4d4d;
+    border: none;
+    cursor: pointer;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 20%;
+}
+
+.cart-dropdown .btnEliminar:hover {
+    background-color: #be2020;
+}
+
+.cart-dropdown span {
+    font-weight: bold;
+    padding-right: 15px;
+}
+
+.cart-dropdown .item-bottom button {
+    width: 35%;
+}
+
+.cart-dropdown button {
+    background-color: #5c67f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.cart-dropdown button:hover {
+    background-color: #4048a1;
+}

@@ -1,0 +1,53 @@
+.edit-user-container {
+  max-width:400px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 8px 8px 20px grey;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.edit-user-container h2 {
+  text-align: center;
+  color: #333;
+}
+
+.edit-user-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-user-container label {
+  font-weight: bold;
+  color: #555;
+}
+
+.edit-user-container input,
+.edit-user-container select {
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.edit-user-container input:focus {
+  border-color: #0056b3;
+  outline: none;
+}
+
+.edit-user-container button {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-user-container button:hover {
+  background-color: #0056b3;
+}
