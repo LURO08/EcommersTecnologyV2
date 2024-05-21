@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getFirestore, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 import './GestionUsuarios.css';
 
@@ -13,39 +13,33 @@ function UserList() {
     const db = getFirestore();
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            setLoading(true);
-            try {
-                const querySnapshot = await getDocs(collection(db, "users"));
-                const userList = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setUsers(userList);
-            } catch (error) {
-                console.error("Error fetching users: ", error);
-                alert('Failed to fetch users!');
-            }
-            setLoading(false);
-        };
-
-        const unsubscribe = auth.onAuthStateChanged(user => {
+        const unsubscribeAuth = auth.onAuthStateChanged(user => {
             if (!user) {
                 navigate('/'); // Redirecciona al usuario a la página de inicio de sesión si no está autenticado
             }
         });
 
-        fetchUsers();
+        const unsubscribeUsers = onSnapshot(collection(db, "users"), snapshot => {
+            const userList = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setUsers(userList);
+            setLoading(false);
+        });
 
-        return () => unsubscribe();
+        return () => {
+            unsubscribeAuth();
+            unsubscribeUsers();
+        };
     }, [navigate, db]);
 
-    const handleDeleteAccount = async (uid) => {
+    const handleDeleteAccount = async (userId) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                // Eliminar el documento del usuario en Firestore
-                await deleteDoc(doc(db, "users", uid));
-                setUsers(users.filter(user => user.id !== uid)); // Aquí es donde deberías filtrar por id en lugar de uid
+                await deleteDoc(doc(db, "users", userId));
+                // No necesitamos actualizar la lista de usuarios localmente,
+                // ya que se actualiza automáticamente mediante la suscripción en tiempo real.
                 alert('User data deleted successfully');
             } catch (error) {
                 console.error("Error deleting user data: ", error);

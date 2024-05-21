@@ -187,3 +187,12 @@ body {
 .cart-dropdown button:hover {
     background-color: #4048a1;
 }
+
+.points{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.points h3{
+    margin-right: 10px;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../firebase-config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import './SalesList.css'; // Archivo CSS para estilos
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
@@ -12,21 +12,16 @@ function SalesList() {
     const salesTableRef = useRef(null);
 
     useEffect(() => {
-        const fetchSales = async () => {
-            try {
-                const salesSnapshot = await getDocs(collection(db, "orders"));
-                const salesData = salesSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                })); 
-                setSales(salesData);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching sales: ", error);
-            }
-        };
+        const unsubscribe = onSnapshot(collection(db, "orders"), snapshot => {
+            const salesData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setSales(salesData);
+            setLoading(false);
+        });
 
-        fetchSales();
+        return () => unsubscribe();
     }, []);
 
     const handleShowDetails = (sale) => {
@@ -39,9 +34,10 @@ function SalesList() {
 
     const handleExportToPDF = () => {
         const pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.setFontSize(18);
-        pdf.text("DETALLE VENTAS", 10, 15);
-        
+        pdf.setFontSize(22);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text("DETALLE VENTAS", 70, 15);
+        pdf.setFont('helvetica', 'normal');
         let y = 25; // Posición inicial para escribir en el PDF
         
         sales.forEach((sale, index) => {
@@ -87,8 +83,9 @@ function SalesList() {
         const totalSalesPrice = sales.reduce((acc, sale) => acc + sale.total, 0);
 
         // Imprimir el precio total de todas las ventas
-        pdf.setFontSize(12);
-        pdf.text(`Precio Total de Todas las Ventas: $${totalSalesPrice.toFixed(2)}`, 10, y + 10);
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(`Total de Todas las Ventas: $${totalSalesPrice.toFixed(2)}`, 60, y + 10);
 
         pdf.save("sales_list.pdf");
     };

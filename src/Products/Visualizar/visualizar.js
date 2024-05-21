@@ -6,14 +6,11 @@ import { auth } from '../../firebase-config';
 import { useCart } from '../../components/header/CartContext';
 import { useNavigate } from 'react-router-dom';
 
-
 function ProductList() {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true); // Cambiado a true para que muestre "Loading products..." al inicio
+    const [loading, setLoading] = useState(true); // Start with loading as true
     const { addToCart } = useCart();
-    const [maxProductQuantity, setMaxProductQuantity] = useState(0);
     const navigate = useNavigate();
-
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -24,39 +21,41 @@ function ProductList() {
                     ...doc.data()
                 }));
                 setProducts(productList);
-                // Calcula la cantidad máxima de productos disponibles
-                const maxQuantity = Math.max(...productList.map(product => product.quantity));
-                setMaxProductQuantity(maxQuantity);
             } catch (error) {
                 console.error("Error fetching products: ", error);
+            } finally {
+                setLoading(false); // Ensure loading is set to false regardless of error
             }
-            setLoading(false);
         };
 
         const unsubscribe = auth.onAuthStateChanged(user => {
-            if (!user) {
-                navigate('/'); // Redirecciona al usuario a la página de inicio de sesión si no está autenticado
+            if (user) {
+                fetchProducts();
+            } else {
+                navigate('/'); // Redirect to login page if user is not authenticated
             }
         });
 
-        fetchProducts();
         return () => unsubscribe();
-    }, [products], [navigate]); // Agregar products como dependencia
+    }, [navigate]); // Use navigate as a dependency
 
-    if (loading || products.length === 0) { // Verifica si los productos están cargando o si no hay productos
+    if (loading) {
         return <div className="loading">Loading products...</div>;
+    }
+
+    if (products.length === 0) {
+        return <div className="loading">No products available.</div>;
     }
 
     return (
         <div className='Container'>
             <div className='Titulo'>
-            <h1>LISTA DE PRODUCTOS</h1>
+                <h1>LISTA DE PRODUCTOS</h1>
             </div>
             <div className="product-list-container">
-                
                 <div className="product-list">
                     {products.map(product => (
-                        product.quantity >= 1 && // Moved the conditional rendering here
+                        product.quantity >= 1 && // Render only products with quantity >= 1
                         <div className="product-card" key={product.id}>
                             <img src={product.imageUrl} alt={product.name} />
                             <h3>{product.name}</h3>
@@ -65,7 +64,7 @@ function ProductList() {
                             <button
                                 type="button" 
                                 className="button register-btn" 
-                                onClick={() =>  addToCart(product)}
+                                onClick={() => addToCart(product)}
                             >
                                 Agregar al Carrito
                             </button>

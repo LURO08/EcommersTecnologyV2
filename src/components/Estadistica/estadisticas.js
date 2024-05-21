@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../firebase-config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import Chart from 'chart.js/auto';
 
 function TopProductsChart() {
@@ -25,6 +25,17 @@ function TopProductsChart() {
         };
 
         fetchProducts();
+
+        const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+            const updatedProducts = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            updatedProducts.sort((a, b) => b.ventas - a.ventas);
+            setProducts(updatedProducts);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     useEffect(() => {

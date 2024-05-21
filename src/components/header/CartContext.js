@@ -6,13 +6,12 @@ import {
     getDoc, 
     updateDoc, 
     setDoc, 
-    addDoc 
+    addDoc,
+    writeBatch 
 } from 'firebase/firestore';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import Roboto from '../../Roboto-normal.js'; // Ajusta la ruta según la ubicación del archivo
-
-
 import { auth } from '../../firebase-config';
 
 const CartContext = createContext();
@@ -55,13 +54,18 @@ export const CartProvider = ({ children }) => {
 
     // Load cart from database
     useEffect(() => {
-
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 const userRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(userRef);
                 if (docSnap.exists()) {
                     setUserName(docSnap.data().Usuario);
+                    const cartDoc = doc(db, "carts", user.uid);
+                    const cartSnapshot = await getDoc(cartDoc);
+                    if (cartSnapshot.exists()) {
+                        const cartData = cartSnapshot.data().cartItems;
+                        dispatch({ type: 'SET_CART', payload: cartData });
+                    }
                 } else {
                     console.log("No such document!");
                     setUserName(user.email || '');
@@ -71,32 +75,8 @@ export const CartProvider = ({ children }) => {
             }
         });
 
-        const fetchCart = async () => {
-            try {
-                const cartDoc = doc(db, "carts", "userCartId"); // Replace "userCartId" with actual user cart ID
-                const cartSnapshot = await getDoc(cartDoc);
-                if (cartSnapshot.exists()) {
-                    const cartData = cartSnapshot.data().cartItems;
-                    dispatch({ type: 'SET_CART', payload: cartData });
-                }
-            } catch (error) {
-                console.error("Error fetching cart: ", error);
-            }
-        };
-        fetchCart();
         return () => unsubscribe();
     }, [db]);
-
-    // Update cart in database whenever cartItems change
-    useEffect(() => {
-        updateCartInDatabase(cartItems);
-    }, [cartItems]);
-
-    const updateCartInDatabase = async (cart) => {
-        const total = cart.reduce((acc, item) => acc + (item.quantity * item.price), 0);
-        const cartDocRef = doc(db, "carts", "userCartId"); // Replace "userCartId" with actual user cart ID
-        await setDoc(cartDocRef, { cartItems: cart, total });
-    };
 
     const updateProductQuantity = async (productId, newQuantity) => {
         const productDocRef = doc(db, 'products', productId);
@@ -133,6 +113,7 @@ export const CartProvider = ({ children }) => {
 
     const checkout = async () => {
         try {
+            const batch = writeBatch(db);
             const cartItemsData = cartItems.map(item => ({
                 id: item.id,
                 name: item.name,
@@ -140,39 +121,39 @@ export const CartProvider = ({ children }) => {
                 price: item.price
             }));
 
-            const total2 = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
-            const pointsEarned = Math.floor(total2 / 100); // Por ejemplo, 1 punto por cada $100 gastados
+            const total = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+            const pointsEarned = Math.floor(total / 100); // Por ejemplo, 1 punto por cada $100 gastados
 
-            // Actualizar la cantidad de productos en la base de datos
-            cartItems.forEach(async item => {
+            // Actualizar la cantidad de productos en la base de datos y las ventas
+            for (const item of cartItems) {
                 const productDoc = await getDoc(doc(db, "products", item.id));
-                const currentQuantity = productDoc.exists() ? productDoc.data().quantity : 0;
-                const newQuantity = Math.max(currentQuantity - item.quantity, 0); // Asegúrate de que la cantidad no sea negativa
-                await updateProductQuantity(item.id, newQuantity);
-
                 if (productDoc.exists()) {
-                    const currentVentas = productDoc.data().ventas || 0;
-                    const newVentas = currentVentas + item.quantity;
-                    await updateProductVentas(item.id, newVentas);
-                }
-            });
+                    const productData = productDoc.data();
+                    const newQuantity = Math.max(productData.quantity - item.quantity, 0);
+                    const newVentas = (productData.ventas || 0) + item.quantity;
 
-            await addDoc(collection(db, 'orders'), {
+                    batch.update(doc(db, 'products', item.id), { quantity: newQuantity, ventas: newVentas });
+                }
+            }
+
+            // Añadir orden de compra
+            batch.set(doc(collection(db, 'orders')), {
                 items: cartItemsData,
-                total: cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0),
+                total,
                 User: userName,
                 timestamp: new Date().toISOString()
             });
 
-           
-            // Actualizar puntos del usuario en la base de datos
+            // Actualizar puntos del usuario
             const userRef = doc(db, "users", auth.currentUser.uid);
             const userDoc = await getDoc(userRef);
             if (userDoc.exists()) {
                 const currentPoints = userDoc.data().points || 0;
                 const newPoints = currentPoints + pointsEarned;
-                await updateDoc(userRef, { points: newPoints });
+                batch.update(userRef, { points: newPoints });
             }
+
+            await batch.commit();
 
             const pdfDoc = new jsPDF({
                 orientation: 'p',
@@ -185,11 +166,9 @@ export const CartProvider = ({ children }) => {
             pdfDoc.addFont('Roboto.ttf', 'Roboto', 'normal');
             pdfDoc.setFont('Roboto');
 
-
             pdfDoc.setFontSize(20);
             pdfDoc.setFont('Roboto', 'bold');
             pdfDoc.text('ECOMMERS TECNOLOGY', 8, 15);
-
 
             pdfDoc.setFontSize(10);
             pdfDoc.setFont('helvetica', 'normal');
@@ -217,21 +196,21 @@ export const CartProvider = ({ children }) => {
                 tableWidth: 'wrap', // Ajusta el ancho de la tabla al contenido
             });
 
-            pdfDoc.text('------------------------------------------------------', 2, pdfDoc.autoTable.previous.finalY + 2);
+            pdfDoc.text('------------------------------------------------------------------------------------', 2, pdfDoc.autoTable.previous.finalY + 2);
 
             // Calcular y agregar el total de la compra
-            const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
             const numArticulos = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
             pdfDoc.setFontSize(10);
             pdfDoc.setFont('helvetica', 'bold');
             pdfDoc.text(`ARTICULOS: ${numArticulos}`, 5, pdfDoc.autoTable.previous.finalY + 7);
             pdfDoc.text(`TOTAL: $${total.toFixed(2)}`, 65, pdfDoc.autoTable.previous.finalY + 7);
-            
+
             pdfDoc.setFontSize(12);
             pdfDoc.setFont('Roboto', 'bold');
-            
-            pdfDoc.text('GRACIAS POR TU COMPRA!', 25, pdfDoc.autoTable.previous.finalY+ 20);
+
+            pdfDoc.text('GRACIAS POR TU COMPRA!', 25, pdfDoc.autoTable.previous.finalY + 20);
+
             // Guardar el documento como un archivo PDF
             pdfDoc.save('ticket.pdf');
 
